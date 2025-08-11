@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const subscriberSchema = new mongoose.Schema({
+const newsletterSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true, 
     lowercase: true,
     trim: true
   },
@@ -14,4 +14,4 @@ const subscriberSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Subscriber', subscriberSchema);
+module.exports = mongoose.model('Newsletter', newsletterSchema);

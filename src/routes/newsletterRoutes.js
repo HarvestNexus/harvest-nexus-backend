@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { newsletter } = require('../controllers/newsletterController');
+const { subscribeNewsletter } = require('../controllers/newsletterController');
 
-router.post('/', newsletter);
+router.post('/', subscribeNewsletter);
 
 module.exports = router;
