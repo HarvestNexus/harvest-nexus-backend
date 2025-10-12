@@ -12,6 +12,9 @@ app.use(express.json());
 const UserRouter = require('./routes/User')
 app.use('/api/newsletter', require('./routes/newsletterRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/signUp', require('./routes/signUpRoutes'))
 app.use('/user', UserRouter);
+
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT);
