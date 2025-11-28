@@ -28,9 +28,10 @@ exports.registerBuyer = async (req, res) => {
       });
     }
 
-    const isEmail = emailOrPhone.includes("@");
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
     const email = isEmail ? emailOrPhone : null;
     const phone_number = !isEmail ? emailOrPhone : null;
+
 
     await OTP.deleteMany({ $or: [{ email }, { phone_number }], role: "buyer-register" });
 
