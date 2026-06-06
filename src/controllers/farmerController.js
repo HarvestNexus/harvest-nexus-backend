@@ -15,18 +15,35 @@ const getOtp = generateOtp || localGenerateOtp;
 ========================= */
 exports.registerFarmer = async (req, res) => {
   try {
-    const { full_name, phone_number, location, farm_name, email, password } = req.body;
+    const { full_name, phone_number, location, email, password, crop_type } = req.body;
 
-    if (!full_name || !phone_number || !location || !farm_name || !email || !password) {
-      return res.status(400).json({ success: false, message: "All fields are required." });
+    if (!full_name || !location || !password || !crop_type || (!email && !phone_number)) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+      });
     }
 
-    const existing = await Farmer.findOne({ $or: [{ email }, { phone_number }] });
+    const existing = await Farmer.findOne({
+      $or: [
+        ...(email ? [{ email }] : []),
+        ...(phone_number ? [{ phone_number }] : []),
+      ],
+    });
+
     if (existing) {
-      return res.status(400).json({ success: false, message: "A farmer with this email or phone number already exists." });
+      return res.status(400).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
-    await OTP.deleteMany({ $or: [{ email }, { phone_number }] });
+    await OTP.deleteMany({
+      $or: [
+        ...(email ? [{ email }] : []),
+        ...(phone_number ? [{ phone_number }] : []),
+      ],
+    });
 
     const otpCode = getOtp();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
@@ -35,45 +52,51 @@ exports.registerFarmer = async (req, res) => {
       full_name,
       phone_number,
       location,
-      farm_name,
       email,
       password,
+      crop_type,
       otp: otpCode,
       expiresAt,
       role: "farmer-register",
     });
 
-   const emailHtml = `
-  <div style="font-family:'Segoe UI',sans-serif;padding:24px;background-color:#f9fff9;border-radius:10px;border:1px solid #dcedc8;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <h2 style="color:#2e7d32;">🌾 Harvest Nexus</h2>
-    </div>
-    <p style="font-size:16px;color:#333;">Hello <strong>${full_name}</strong>,</p>
-    <p style="font-size:15px;color:#444;line-height:1.6;">
-      Use the OTP below to verify your account:
-    </p>
-    <div style="text-align:center;margin:20px 0;">
-      <h2 style="color:#1b5e20;font-size:28px;letter-spacing:3px;">${otpCode}</h2>
-    </div>
-    <p style="font-size:14px;color:#555;">
-      ⏰ This OTP will expire in <strong>5 minutes</strong>.
-    </p>
-    <p style="font-size:13px;color:#777;margin-top:30px;text-align:center;">
-      🌿 Thank you for joining Harvest Nexus — let’s grow together!
-    </p>
-  </div>
-`;
+    // ✅ FULL STYLED EMAIL
+    const emailHtml = `
+      <div style="font-family:'Segoe UI',sans-serif;padding:24px;background-color:#f9fff9;border-radius:10px;border:1px solid #dcedc8;">
+        <div style="text-align:center;margin-bottom:20px;">
+          <h2 style="color:#2e7d32;">🌾 Harvest Nexus</h2>
+        </div>
+        <p style="font-size:16px;color:#333;">Hello <strong>${full_name}</strong>,</p>
+        <p style="font-size:15px;color:#444;line-height:1.6;">
+          Use the OTP below to verify your account:
+        </p>
+        <div style="text-align:center;margin:20px 0;">
+          <h2 style="color:#1b5e20;font-size:28px;letter-spacing:3px;">${otpCode}</h2>
+        </div>
+        <p style="font-size:14px;color:#555;">
+          ⏰ This OTP will expire in <strong>5 minutes</strong>.
+        </p>
+        <p style="font-size:13px;color:#777;margin-top:30px;text-align:center;">
+          🌿 Thank you for joining Harvest Nexus — let’s grow together!
+        </p>
+      </div>
+    `;
 
+    if (email) {
+      await sendEmail(email, "Verify Your Harvest Nexus Account", emailHtml);
+    }
 
-    await sendEmail(email, "Verify Your Harvest Nexus Account", emailHtml);
-
-    res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: "OTP sent to your email. Verify to complete registration.",
+      message: "OTP sent successfully",
     });
-  } catch (err) {
-    console.error("Farmer Register Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+
+  } catch (error) {
+    console.error("Register Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
@@ -83,10 +106,16 @@ exports.registerFarmer = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   try {
     const { otp } = req.body;
-    if (!otp) return res.status(400).json({ success: false, message: "OTP is required." });
+
+    if (!otp) {
+      return res.status(400).json({ success: false, message: "OTP is required." });
+    }
 
     const record = await OTP.findOne({ otp, role: "farmer-register" });
-    if (!record) return res.status(400).json({ success: false, message: "Invalid or expired OTP." });
+
+    if (!record) {
+      return res.status(400).json({ success: false, message: "Invalid or expired OTP." });
+    }
 
     if (record.expiresAt < new Date()) {
       await OTP.deleteOne({ _id: record._id });
@@ -96,42 +125,47 @@ exports.verifyOtp = async (req, res) => {
     const exists = await Farmer.findOne({
       $or: [{ email: record.email }, { phone_number: record.phone_number }],
     });
+
     if (exists) {
       await OTP.deleteOne({ _id: record._id });
       return res.status(400).json({ success: false, message: "Farmer already registered." });
     }
 
     const hashed = await hashedPassword(record.password);
+
     const farmer = await Farmer.create({
       full_name: record.full_name,
       phone_number: record.phone_number,
       location: record.location,
-      farm_name: record.farm_name,
       email: record.email,
       password: hashed,
+      crop_type: record.crop_type,
       isVerified: true,
     });
 
     await OTP.deleteOne({ _id: record._id });
 
-   const emailHtml = `
-  <div style="font-family:'Segoe UI',sans-serif;padding:24px;background-color:#f9fff9;border-radius:10px;border:1px solid #dcedc8;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <h2 style="color:#2e7d32;">🌾 Harvest Nexus</h2>
-    </div>
-    <p style="font-size:16px;color:#333;">Hi <strong>${farmer.full_name}</strong>,</p>
-    <p style="font-size:15px;color:#444;line-height:1.6;">
-      Your account has been successfully verified. Welcome to <strong>Harvest Nexus</strong>! 🌾
-    </p>
-    <p style="font-size:13px;color:#777;margin-top:30px;text-align:center;">
-      🌿 We're excited to have you with us — The Harvest Nexus Team
-    </p>
-  </div>
-`;
+    // ✅ STYLED SUCCESS EMAIL
+    const emailHtml = `
+      <div style="font-family:'Segoe UI',sans-serif;padding:24px;background-color:#f9fff9;border-radius:10px;border:1px solid #dcedc8;">
+        <div style="text-align:center;margin-bottom:20px;">
+          <h2 style="color:#2e7d32;">🌾 Harvest Nexus</h2>
+        </div>
+        <p style="font-size:16px;color:#333;">Hi <strong>${farmer.full_name}</strong>,</p>
+        <p style="font-size:15px;color:#444;line-height:1.6;">
+          Your account has been successfully verified. Welcome to <strong>Harvest Nexus</strong>! 🌾
+        </p>
+        <p style="font-size:13px;color:#777;margin-top:30px;text-align:center;">
+          🌿 We're excited to have you with us — The Harvest Nexus Team
+        </p>
+      </div>
+    `;
 
-    await sendEmail(farmer.email, "Welcome to Harvest Nexus", emailHtml);
+    if (farmer.email) {
+      await sendEmail(farmer.email, "Welcome to Harvest Nexus", emailHtml);
+    }
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Farmer verified and registered successfully.",
       data: {
@@ -141,9 +175,10 @@ exports.verifyOtp = async (req, res) => {
         phone_number: farmer.phone_number,
       },
     });
+
   } catch (err) {
     console.error("Verify Farmer OTP Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -155,20 +190,33 @@ exports.loginFarmer = async (req, res) => {
     const { emailOrPhone, password } = req.body;
 
     if (!emailOrPhone || !password) {
-      return res.status(400).json({ success: false, message: "Email/Phone and Password are required." });
+      return res.status(400).json({
+        success: false,
+        message: "Email/Phone and Password are required.",
+      });
     }
 
     const farmer = await Farmer.findOne({
       $or: [{ email: emailOrPhone }, { phone_number: emailOrPhone }],
     });
-    if (!farmer) return res.status(400).json({ success: false, message: "Invalid credentials." });
+
+    if (!farmer) {
+      return res.status(400).json({ success: false, message: "Invalid credentials." });
+    }
 
     const isMatch = await bcrypt.compare(password, farmer.password);
-    if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials." });
 
-    const token = jwt.sign({ id: farmer._id, role: "farmer" }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: "Invalid credentials." });
+    }
 
-    res.status(200).json({
+    const token = jwt.sign(
+      { id: farmer._id, role: "farmer" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.status(200).json({
       success: true,
       message: "Login successful.",
       token,
@@ -179,9 +227,10 @@ exports.loginFarmer = async (req, res) => {
         phone_number: farmer.phone_number,
       },
     });
+
   } catch (err) {
     console.error("Farmer Login Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -288,7 +337,7 @@ exports.farmerResetPassword = async (req, res) => {
     await farmer.save();
     await OTP.deleteOne({ _id: record._id });
 
-    const emailHtml = `
+    const emailHtml = `...
   <div style="font-family:'Segoe UI',sans-serif;padding:24px;background-color:#f9fff9;border-radius:10px;border:1px solid #dcedc8;">
     <div style="text-align:center;margin-bottom:20px;">
       <h2 style="color:#2e7d32;">🌾 Harvest Nexus</h2>

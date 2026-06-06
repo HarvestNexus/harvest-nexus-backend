@@ -15,13 +15,14 @@ const farmerRoutes = require("./routes/farmerRoutes");
 const buyerRoutes = require("./routes/buyerRoutes");
 const storageRoutes = require("./routes/storageRoutes");
 const logisticsRoutes = require("./routes/logisticsRoutes"); 
+const googleAuthRoutes = require("./routes/googleAuthRoutes");
 
 //  API Base Routes
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/buyer", buyerRoutes);
 app.use("/api/storage", storageRoutes);
 app.use("/api/logistics", logisticsRoutes);
-
+app.use("/api/auth", googleAuthRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).send("🌾 Harvest Nexus API is running smoothly...");
