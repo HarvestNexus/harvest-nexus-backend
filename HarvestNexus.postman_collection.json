@@ -1,0 +1,1130 @@
+{
+  "info": {
+    "name": "Harvest Nexus API",
+    "_postman_id": "harvest-nexus-api-v1",
+    "description": "Complete API collection for Harvest Nexus — Buyer, Farmer, Logistics, Storage",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5001", "type": "string" },
+    { "key": "buyer_token", "value": "", "type": "string" },
+    { "key": "farmer_token", "value": "", "type": "string" },
+    { "key": "logistics_token", "value": "", "type": "string" },
+    { "key": "storage_token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🛒 Buyer Auth",
+      "item": [
+        {
+          "name": "Register Buyer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Amina Bello\",\n  \"email\": \"amina@example.com\",\n  \"phone_number\": \"08012345678\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/register", "host": ["{{base_url}}"], "path": ["api", "buyer", "register"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"amina@example.com\",\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/verify-otp", "host": ["{{base_url}}"], "path": ["api", "buyer", "verify-otp"] }
+          }
+        },
+        {
+          "name": "Login Buyer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["const r = pm.response.json();\nif (r.token) pm.collectionVariables.set('buyer_token', r.token);"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailOrPhone\": \"amina@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/login", "host": ["{{base_url}}"], "path": ["api", "buyer", "login"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailOrPhone\": \"amina@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/forgot-password", "host": ["{{base_url}}"], "path": ["api", "buyer", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/verify-reset-otp", "host": ["{{base_url}}"], "path": ["api", "buyer", "verify-reset-otp"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otpId\": \"<otpId from verify-reset-otp>\",\n  \"newPassword\": \"newpass123\",\n  \"confirmPassword\": \"newpass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/reset-password", "host": ["{{base_url}}"], "path": ["api", "buyer", "reset-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧑‍🌾 Farmer Auth",
+      "item": [
+        {
+          "name": "Register Farmer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Emeka Okafor\",\n  \"email\": \"emeka@example.com\",\n  \"phone_number\": \"08098765432\",\n  \"password\": \"password123\",\n  \"location\": \"Kano, Nigeria\",\n  \"crop_type\": \"Grains & Cereals\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/register", "host": ["{{base_url}}"], "path": ["api", "farmer", "register"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"emeka@example.com\",\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/verify", "host": ["{{base_url}}"], "path": ["api", "farmer", "verify"] }
+          }
+        },
+        {
+          "name": "Login Farmer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["const r = pm.response.json();\nif (r.token) pm.collectionVariables.set('farmer_token', r.token);"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailOrPhone\": \"emeka@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/login", "host": ["{{base_url}}"], "path": ["api", "farmer", "login"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailOrPhone\": \"emeka@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/forgot-password", "host": ["{{base_url}}"], "path": ["api", "farmer", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/verify-reset-otp", "host": ["{{base_url}}"], "path": ["api", "farmer", "verify-reset-otp"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otpId\": \"<otpId from verify-reset-otp>\",\n  \"newPassword\": \"newpass123\",\n  \"confirmPassword\": \"newpass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/reset-password", "host": ["{{base_url}}"], "path": ["api", "farmer", "reset-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚚 Logistics Auth",
+      "item": [
+        {
+          "name": "Register Logistics",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_name\": \"Swift Deliveries Ltd\",\n  \"email\": \"swift@example.com\",\n  \"phone_number\": \"08011223344\",\n  \"password\": \"password123\",\n  \"vehicle_type\": \"Truck\",\n  \"vehicle_capacity\": \"5 tonnes\",\n  \"service_area\": \"Lagos, Ogun\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/register", "host": ["{{base_url}}"], "path": ["api", "logistics", "register"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"swift@example.com\",\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/verify-otp", "host": ["{{base_url}}"], "path": ["api", "logistics", "verify-otp"] }
+          }
+        },
+        {
+          "name": "Login Logistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["const r = pm.response.json();\nif (r.token) pm.collectionVariables.set('logistics_token', r.token);"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"<login_id from register response>\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/login", "host": ["{{base_url}}"], "path": ["api", "logistics", "login"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailOrPhone\": \"swift@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/forgot-password", "host": ["{{base_url}}"], "path": ["api", "logistics", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/verify-reset-otp", "host": ["{{base_url}}"], "path": ["api", "logistics", "verify-reset-otp"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otpId\": \"<otpId from verify-reset-otp>\",\n  \"newPassword\": \"newpass123\",\n  \"confirmPassword\": \"newpass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/reset-password", "host": ["{{base_url}}"], "path": ["api", "logistics", "reset-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Storage Auth",
+      "item": [
+        {
+          "name": "Register Storage",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storage_name\": \"CoolStore Abuja\",\n  \"storage_email_or_phone\": \"coolstore@example.com\",\n  \"storage_location\": \"Abuja, FCT\",\n  \"storage_type\": \"Cold Storage\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/register", "host": ["{{base_url}}"], "path": ["api", "storage", "register"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/verify-otp", "host": ["{{base_url}}"], "path": ["api", "storage", "verify-otp"] }
+          }
+        },
+        {
+          "name": "Login Storage",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["const r = pm.response.json();\nif (r.token) pm.collectionVariables.set('storage_token', r.token);"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storage_email_or_phone\": \"coolstore@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/login", "host": ["{{base_url}}"], "path": ["api", "storage", "login"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storage_email_or_phone\": \"coolstore@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/forgot-password", "host": ["{{base_url}}"], "path": ["api", "storage", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"12345\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/verify-reset-otp", "host": ["{{base_url}}"], "path": ["api", "storage", "verify-reset-otp"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otpId\": \"<otpId from verify-reset-otp>\",\n  \"newPassword\": \"newpass123\",\n  \"confirmPassword\": \"newpass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/reset-password", "host": ["{{base_url}}"], "path": ["api", "storage", "reset-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Google Auth",
+      "item": [
+        {
+          "name": "Google Signup (Buyer only)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Fatima Aliyu\",\n  \"email\": \"fatima@gmail.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/auth/google", "host": ["{{base_url}}"], "path": ["api", "auth", "google"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products (Public)",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products?category=Fruits&location=Lagos&minPrice=500&maxPrice=5000&search=tomato&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"],
+              "query": [
+                { "key": "category", "value": "Fruits", "description": "Filter by category" },
+                { "key": "location", "value": "Lagos", "description": "Filter by location" },
+                { "key": "minPrice", "value": "500" },
+                { "key": "maxPrice", "value": "5000" },
+                { "key": "search", "value": "tomato", "description": "Search by name" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/products/<product_id>", "host": ["{{base_url}}"], "path": ["api", "products", "<product_id>"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Buyer — Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/profile", "host": ["{{base_url}}"], "path": ["api", "buyer", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Amina Bello\",\n  \"phone_number\": \"08012345678\",\n  \"profile_image\": \"https://example.com/photo.jpg\",\n  \"address\": {\n    \"street\": \"12 Main Street\",\n    \"city\": \"Lagos\",\n    \"state\": \"Lagos\",\n    \"country\": \"Nigeria\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/profile", "host": ["{{base_url}}"], "path": ["api", "buyer", "profile"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpass456\",\n  \"confirmPassword\": \"newpass456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/change-password", "host": ["{{base_url}}"], "path": ["api", "buyer", "change-password"] }
+          }
+        },
+        {
+          "name": "Get Saved Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/saved-suppliers", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-suppliers"] }
+          }
+        },
+        {
+          "name": "Save Supplier",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/saved-suppliers/<farmerId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-suppliers", "<farmerId>"] }
+          }
+        },
+        {
+          "name": "Remove Saved Supplier",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/saved-suppliers/<farmerId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-suppliers", "<farmerId>"] }
+          }
+        },
+        {
+          "name": "Get Saved Cards",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/saved-cards", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-cards"] }
+          }
+        },
+        {
+          "name": "Add Saved Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"card_number_last4\": \"4242\",\n  \"cardholder_name\": \"Amina Bello\",\n  \"expiry\": \"12/26\",\n  \"card_type\": \"Visa\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/saved-cards", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-cards"] }
+          }
+        },
+        {
+          "name": "Remove Saved Card",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/saved-cards/<cardId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "saved-cards", "<cardId>"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/notifications", "host": ["{{base_url}}"], "path": ["api", "buyer", "notifications"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/notifications/<notifId>/read", "host": ["{{base_url}}"], "path": ["api", "buyer", "notifications", "<notifId>", "read"] }
+          }
+        },
+        {
+          "name": "Mark All Notifications Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/notifications/read-all", "host": ["{{base_url}}"], "path": ["api", "buyer", "notifications", "read-all"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Buyer — Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/cart", "host": ["{{base_url}}"], "path": ["api", "buyer", "cart"] }
+          }
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"<product_id>\",\n  \"quantity\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/cart", "host": ["{{base_url}}"], "path": ["api", "buyer", "cart"] }
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/cart/<itemId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "cart", "<itemId>"] }
+          }
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/cart/<itemId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "cart", "<itemId>"] }
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/cart", "host": ["{{base_url}}"], "path": ["api", "buyer", "cart"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Buyer — Orders",
+      "item": [
+        {
+          "name": "Create Order (from cart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_address\": {\n    \"street\": \"5 Allen Avenue\",\n    \"city\": \"Lagos\",\n    \"state\": \"Lagos\"\n  },\n  \"delivery_method\": \"delivery\",\n  \"payment_method\": \"bank_transfer\",\n  \"notes\": \"Please call before delivery\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/orders", "host": ["{{base_url}}"], "path": ["api", "buyer", "orders"] }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/orders", "host": ["{{base_url}}"], "path": ["api", "buyer", "orders"] }
+          }
+        },
+        {
+          "name": "Get Single Order",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/orders/<orderId>", "host": ["{{base_url}}"], "path": ["api", "buyer", "orders", "<orderId>"] }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/orders/<orderId>/cancel", "host": ["{{base_url}}"], "path": ["api", "buyer", "orders", "<orderId>", "cancel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Buyer — Payments",
+      "item": [
+        {
+          "name": "Get Bank Details",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/payments/bank-details", "host": ["{{base_url}}"], "path": ["api", "buyer", "payments", "bank-details"] }
+          }
+        },
+        {
+          "name": "Confirm Bank Transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": \"<orderId>\",\n  \"amount\": 5000,\n  \"bank_name\": \"First Bank\",\n  \"account_number\": \"3012345678\",\n  \"account_name\": \"Amina Bello\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/payments/bank-transfer", "host": ["{{base_url}}"], "path": ["api", "buyer", "payments", "bank-transfer"] }
+          }
+        },
+        {
+          "name": "Pay With Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": \"<orderId>\",\n  \"amount\": 5000,\n  \"card_last4\": \"4242\",\n  \"cardholder_name\": \"Amina Bello\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/buyer/payments/card", "host": ["{{base_url}}"], "path": ["api", "buyer", "payments", "card"] }
+          }
+        },
+        {
+          "name": "Get Payment History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{buyer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/buyer/payments", "host": ["{{base_url}}"], "path": ["api", "buyer", "payments"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧑‍🌾 Farmer — Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/profile", "host": ["{{base_url}}"], "path": ["api", "farmer", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{farmer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farm_name\": \"Okafor Farms\",\n  \"description\": \"Fresh organic produce from Kano\",\n  \"profile_image\": \"https://example.com/farm.jpg\",\n  \"bank_name\": \"Zenith Bank\",\n  \"account_number\": \"2012345678\",\n  \"account_name\": \"Emeka Okafor\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/profile", "host": ["{{base_url}}"], "path": ["api", "farmer", "profile"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{farmer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpass456\",\n  \"confirmPassword\": \"newpass456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/change-password", "host": ["{{base_url}}"], "path": ["api", "farmer", "change-password"] }
+          }
+        },
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/dashboard", "host": ["{{base_url}}"], "path": ["api", "farmer", "dashboard"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/notifications", "host": ["{{base_url}}"], "path": ["api", "farmer", "notifications"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/notifications/<notifId>/read", "host": ["{{base_url}}"], "path": ["api", "farmer", "notifications", "<notifId>", "read"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Farmer — Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{farmer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fresh Tomatoes\",\n  \"description\": \"Organically grown tomatoes from Kano\",\n  \"category\": \"Vegetables\",\n  \"price\": 1500,\n  \"unit\": \"per basket\",\n  \"quantity_available\": 50,\n  \"images\": [\"https://example.com/tomato.jpg\"],\n  \"location\": \"Kano, Nigeria\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/products", "host": ["{{base_url}}"], "path": ["api", "farmer", "products"] }
+          }
+        },
+        {
+          "name": "Get My Products",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/products", "host": ["{{base_url}}"], "path": ["api", "farmer", "products"] }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{farmer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1800,\n  \"quantity_available\": 30,\n  \"status\": \"available\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/products/<product_id>", "host": ["{{base_url}}"], "path": ["api", "farmer", "products", "<product_id>"] }
+          }
+        },
+        {
+          "name": "Delete Product (soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/products/<product_id>", "host": ["{{base_url}}"], "path": ["api", "farmer", "products", "<product_id>"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Farmer — Orders",
+      "item": [
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/orders", "host": ["{{base_url}}"], "path": ["api", "farmer", "orders"] }
+          }
+        },
+        {
+          "name": "Confirm Order",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/orders/<orderId>/confirm", "host": ["{{base_url}}"], "path": ["api", "farmer", "orders", "<orderId>", "confirm"] }
+          }
+        },
+        {
+          "name": "Mark Order Ready",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/orders/<orderId>/ready", "host": ["{{base_url}}"], "path": ["api", "farmer", "orders", "<orderId>", "ready"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Farmer — Storage Booking",
+      "item": [
+        {
+          "name": "Browse All Storage",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/storage", "host": ["{{base_url}}"], "path": ["api", "farmer", "storage"] }
+          }
+        },
+        {
+          "name": "Book Storage",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{farmer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storage_id\": \"<storage_id>\",\n  \"produce_type\": \"Tomatoes\",\n  \"quantity\": 100,\n  \"duration_days\": 14,\n  \"start_date\": \"2026-07-01\",\n  \"notes\": \"Handle with care\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/farmer/storage/book", "host": ["{{base_url}}"], "path": ["api", "farmer", "storage", "book"] }
+          }
+        },
+        {
+          "name": "Get My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/storage/bookings", "host": ["{{base_url}}"], "path": ["api", "farmer", "storage", "bookings"] }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{farmer_token}}" }],
+            "url": { "raw": "{{base_url}}/api/farmer/storage/bookings/<bookingId>/cancel", "host": ["{{base_url}}"], "path": ["api", "farmer", "storage", "bookings", "<bookingId>", "cancel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚚 Logistics — Profile & Deliveries",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{logistics_token}}" }],
+            "url": { "raw": "{{base_url}}/api/logistics/profile", "host": ["{{base_url}}"], "path": ["api", "logistics", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{logistics_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profile_image\": \"https://example.com/logo.jpg\",\n  \"is_available\": true,\n  \"service_area\": \"Lagos, Ogun, Oyo\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/profile", "host": ["{{base_url}}"], "path": ["api", "logistics", "profile"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{logistics_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpass456\",\n  \"confirmPassword\": \"newpass456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/change-password", "host": ["{{base_url}}"], "path": ["api", "logistics", "change-password"] }
+          }
+        },
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{logistics_token}}" }],
+            "url": { "raw": "{{base_url}}/api/logistics/dashboard", "host": ["{{base_url}}"], "path": ["api", "logistics", "dashboard"] }
+          }
+        },
+        {
+          "name": "Get Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{logistics_token}}" }],
+            "url": { "raw": "{{base_url}}/api/logistics/deliveries", "host": ["{{base_url}}"], "path": ["api", "logistics", "deliveries"] }
+          }
+        },
+        {
+          "name": "Update Delivery Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{logistics_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"delivered\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/logistics/deliveries/<deliveryId>/status", "host": ["{{base_url}}"], "path": ["api", "logistics", "deliveries", "<deliveryId>", "status"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{logistics_token}}" }],
+            "url": { "raw": "{{base_url}}/api/logistics/notifications", "host": ["{{base_url}}"], "path": ["api", "logistics", "notifications"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{logistics_token}}" }],
+            "url": { "raw": "{{base_url}}/api/logistics/notifications/<notifId>/read", "host": ["{{base_url}}"], "path": ["api", "logistics", "notifications", "<notifId>", "read"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Storage — Profile & Bookings",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{storage_token}}" }],
+            "url": { "raw": "{{base_url}}/api/storage/profile", "host": ["{{base_url}}"], "path": ["api", "storage", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{storage_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profile_image\": \"https://example.com/store.jpg\",\n  \"capacity\": 5000,\n  \"price_per_unit\": 200,\n  \"is_available\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/profile", "host": ["{{base_url}}"], "path": ["api", "storage", "profile"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{storage_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpass456\",\n  \"confirmPassword\": \"newpass456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/change-password", "host": ["{{base_url}}"], "path": ["api", "storage", "change-password"] }
+          }
+        },
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{storage_token}}" }],
+            "url": { "raw": "{{base_url}}/api/storage/dashboard", "host": ["{{base_url}}"], "path": ["api", "storage", "dashboard"] }
+          }
+        },
+        {
+          "name": "Get Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{storage_token}}" }],
+            "url": { "raw": "{{base_url}}/api/storage/bookings", "host": ["{{base_url}}"], "path": ["api", "storage", "bookings"] }
+          }
+        },
+        {
+          "name": "Update Booking Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{storage_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/storage/bookings/<bookingId>/status", "host": ["{{base_url}}"], "path": ["api", "storage", "bookings", "<bookingId>", "status"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{storage_token}}" }],
+            "url": { "raw": "{{base_url}}/api/storage/notifications", "host": ["{{base_url}}"], "path": ["api", "storage", "notifications"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{storage_token}}" }],
+            "url": { "raw": "{{base_url}}/api/storage/notifications/<notifId>/read", "host": ["{{base_url}}"], "path": ["api", "storage", "notifications", "<notifId>", "read"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📧 Contact & Newsletter",
+      "item": [
+        {
+          "name": "Send Contact Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"08011223344\",\n  \"message\": \"I need help with my account\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/contact", "host": ["{{base_url}}"], "path": ["api", "contact"] }
+          }
+        },
+        {
+          "name": "Subscribe to Newsletter",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"subscriber@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/newsletter", "host": ["{{base_url}}"], "path": ["api", "newsletter"] }
+          }
+        }
+      ]
+    }
+  ]
+}
