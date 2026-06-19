@@ -3,44 +3,28 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/sendEmail");
 
-// Your models
-const Farmer = require("../models/farmerModel");
 const Buyer = require("../models/buyerModel");
-const Logistics = require("../models/logisticsModel");
-const Storage = require("../models/storageModel");
 
 exports.googleSignup = async (req, res) => {
   try {
-    const { full_name, email, role } = req.body;
+    const { full_name, email } = req.body;
 
-    if (!email || !role) {
+    if (!email) {
       return res.status(400).json({
         success: false,
-        message: "Email and role are required",
+        message: "Email is required",
       });
     }
 
-    let Model;
-
-    if (role === "farmer") Model = Farmer;
-    else if (role === "buyer") Model = Buyer;
-    else if (role === "logistics") Model = Logistics;
-    else if (role === "storage") Model = Storage;
-    else {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid role selected",
-      });
-    }
-
-    let user = await Model.findOne({ email });
+    let user = await Buyer.findOne({ email });
 
     // NEW USER
     if (!user) {
-      user = await Model.create({
+      user = await Buyer.create({
         full_name,
         email,
         isVerified: true,
+        authProvider: "google",
       });
 
       const emailHtml = `
@@ -53,7 +37,7 @@ exports.googleSignup = async (req, res) => {
 
           <p>Your Google account has been successfully connected.</p>
 
-          <p>Your <strong>${role}</strong> account is now active and ready to use.</p>
+          <p>Your <strong>Buyer</strong> account is now active and ready to use.</p>
 
           <p style="margin-top:20px;">Welcome to Harvest Nexus 🌿</p>
         </div>
@@ -63,7 +47,7 @@ exports.googleSignup = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role },
+      { id: user._id, role: "buyer" },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );

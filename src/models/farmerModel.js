@@ -7,7 +7,7 @@ const farmerSchema = new mongoose.Schema({
 
   phone_number: { type: String, unique: true, sparse: true },
 
-  password: { type: String, required: true },
+  password: { type: String },
 
   location: { type: String, required: true },
 

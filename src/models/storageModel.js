@@ -18,7 +18,7 @@ const storageSchema = new mongoose.Schema({
     default: "Others",
   },
 
-  password: { type: String, required: true },
+  password: { type: String },
 
   profile_image: { type: String },
 

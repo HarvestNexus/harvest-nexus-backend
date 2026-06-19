@@ -19,7 +19,7 @@ const logisticsSchema = new mongoose.Schema({
 
   service_area: { type: String, required: true },
 
-  password: { type: String, required: true },
+  password: { type: String },
 
   profile_image: { type: String },
 
